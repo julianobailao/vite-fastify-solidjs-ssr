@@ -47,7 +47,7 @@ async function createServer(root = __dirname, isProd = process.env.NODE_ENV === 
     );
   }
 
-  app.get("/api", getApi);
+  app.use("/api", getApi);
 
   app.use("*", async (req: Request, res: Response) => {
     try {

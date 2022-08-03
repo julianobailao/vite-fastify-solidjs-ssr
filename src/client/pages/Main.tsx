@@ -13,7 +13,7 @@ const Main = () => {
   };
 
   return (
-    <div className="flex bg-white-100 font-sans items-center flex-col justify-between h-screen">
+    <div class="flex bg-white-100 font-sans items-center flex-col justify-between h-screen">
       <h2>Paginas</h2>
       <button onClick={setUp}>Up</button>
       <h3>{count()}</h3>
