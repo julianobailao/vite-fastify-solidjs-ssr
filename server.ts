@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getApi } from "./src/server/routes/api";
+import { generateHydrationScript } from "solid-js/web";
 
 const fs = require("fs");
 const path = require("path");
@@ -66,7 +67,8 @@ async function createServer(root = __dirname, isProd = process.env.NODE_ENV === 
 
       const context = {};
       const appHtml = await render(url, context);
-      const html = template.replace(`<!--app-html-->`, appHtml);
+      let html = template.replace(`<!--app-html-->`, appHtml);
+      html = template.replace(`<!--hydratation-script-->`, generateHydrationScript());
 
       res.status(200).set({ "Content-Type": "text/html" }).end(html);
     } catch (e: any) {

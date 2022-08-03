@@ -1,12 +1,12 @@
-# Vite Typescript React 18 SSR
+# Vite Typescript Solidjs SSR
 
-[![Node CI](https://github.com/jonluca/vite-typescript-ssr-react/actions/workflows/nodejs.yml/badge.svg)](https://github.com/jonluca/vite-typescript-ssr-react/actions/workflows/nodejs.yml)
+[![Node CI](https://github.com/julianobailao/vite-typescript-solidjs-ssr/actions/workflows/nodejs.yml/badge.svg)](https://github.com/julianobailao/vite-typescript-solidjs-ssr/actions/workflows/nodejs.yml)
 
 A _blazingly_ modern web development stack. This template repo tries to achieve the minimum viable example for each of the following:
 
 ![video](video.gif)
 
-- [React 18](https://reactjs.org/blog/2022/03/29/react-v18.html)
+- [Solidjs 1.4](https://www.solidjs.com)
 - [Typescript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
 - [Vite with Vite SSR](https://vitejs.dev/guide/ssr.html)
 - [GitHub Actions](https://github.com/features/actions)
@@ -61,3 +61,11 @@ yarn build will create the assets in `dist` - a `client` and `server` folder. Se
 ## CI
 
 We use GitHub actions to build the app. The badge is at the top of the repo. Currently it just confirms that everything builds properly.
+
+## TODO
+
+[ ] Write tests with solidjs
+
+## Thanks
+
+This project is strong based on [https://github.com/jonluca/vite-typescript-ssr-react]() I just removed react and put solidjs.

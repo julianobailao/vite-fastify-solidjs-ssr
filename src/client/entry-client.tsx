@@ -1,4 +1,4 @@
-import { createRoot, getOwner } from "solid-js";
+import { isServer } from "solid-js/web";
 import { hydrate, render } from "solid-js/web";
 import { App } from "./App";
 import "./index.css";
@@ -14,8 +14,8 @@ const FullApp = () => {
 };
 
 // @ts-ignore
-if (import.meta.hot) {
-  render(() => <FullApp />, container!);
-} else {
+if (isServer) {
   hydrate(() => <FullApp />, container!);
+} else {
+  render(() => <FullApp />, container!);
 }
