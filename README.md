@@ -9,6 +9,7 @@ A _blazingly_ modern web development stack. This template repo tries to achieve 
 - [Solidjs 1.4](https://www.solidjs.com)
 - [Typescript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
 - [Vite with Vite SSR](https://vitejs.dev/guide/ssr.html)
+- [Vitest](https://vitest.dev)
 - [GitHub Actions](https://github.com/features/actions)
 - [Tailwind CSS](https://tailwindui.com/)
 - [Prettier](https://prettier.io/) & [ESLint](https://eslint.org/)
@@ -40,6 +41,26 @@ yarn serve
 
 yarn build will create the assets in `dist` - a `client` and `server` folder. Serve will run `dist/server.js` with Node, but feel free to change this to use Docker or some other process manager to suit your deployment needs.
 
+## Testing
+
+```
+yarn test:client
+yarn test:server
+```
+
+### Vitest UI
+
+That is pretty cool!
+
+```
+yarn vitest:client
+yarn vitest:server
+```
+
+![image](https://user-images.githubusercontent.com/11247099/171992272-7c6057e2-80c3-4b17-a7b6-0ac28e5a5e0b.png)
+
+See the oficial documentation [here](https://vitest.dev/guide/ui.html)
+
 ## Files
 
 `eslintrc.js` - a barebones eslint configuration for 2021, that extends off of the recommended ESLint config and prettier
@@ -58,14 +79,14 @@ yarn build will create the assets in `dist` - a `client` and `server` folder. Se
 
 `vite.config.ts` - Vite configuration
 
+`vitest.config.ts` - Vitest client tests configuration
+
+`vitest.server.config.ts` - Vitest server tests configuration
+
 ## CI
 
 We use GitHub actions to build the app. The badge is at the top of the repo. Currently it just confirms that everything builds properly.
 
-## TODO
-
-[ ] Write tests with solidjs
-
 ## Thanks
 
-This project is strong based on [https://github.com/jonluca/vite-typescript-ssr-react]() I just removed react and put solidjs.
+This project is strong based on [https://github.com/jonluca/vite-typescript-ssr-react]()

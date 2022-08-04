@@ -4,7 +4,7 @@
   "description": "Boilerplate for a modern web stack",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonluca/vite-typescript-ssr-react"
+    "url": "https://github.com/julianobailao/vite-typescript-solidjs-ssr"
   },
   "author": "JonLuca DeCaro",
   "license": "MIT",
@@ -15,9 +15,15 @@
     "build": "tsc -p tsconfig.prod.json && yarn build:client && yarn build:server && yarn copy-files",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/client/entry-server.tsx --outDir dist/server",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "coverage": "jest --coverage",
+    "test": "npm run test:client && npm run test:server",
+    "vitest:client": "vitest --ui",
+    "test:client": "vitest",
+    "test:client:watch": "vitest --watch",
+    "test:client:coverage": "vitest --coverage",
+    "test:server": "vitest --config vitest.server.config.ts",
+    "test:server:watch": "vitest --watch --config vitest.server.config.ts",
+    "test:server:coverage": "vitest --coverage --config vitest.server.config.ts",
+    "vitest:server": "vitest --ui --config vitest.server.config.ts",
     "serve": "yarn build && cross-env NODE_ENV=production node --experimental-modules --experimental-specifier-resolution=node dist/server.js",
     "serve:local": "vite serve",
     "clean": "rimraf dist/",
@@ -48,6 +54,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
     "@vitejs/plugin-react": "^2.0.0",
+    "@vitest/ui": "^0.20.3",
     "concurrently": "7.3.0",
     "copyfiles": "^2.4.1",
     "eslint": "^8.20.0",
@@ -61,10 +68,13 @@
     "postcss": "8.4.14",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
+    "solid-testing-library": "^0.3.0",
+    "supertest": "^6.2.4",
     "tailwindcss": "3.1.6",
     "ts-jest": "^28.0.7",
     "typescript": "4.7.4",
     "vite": "3.0.2",
-    "vite-plugin-solid": "^2.3.0"
+    "vite-plugin-solid": "^2.3.0",
+    "vitest": "^0.20.3"
   }
 }
