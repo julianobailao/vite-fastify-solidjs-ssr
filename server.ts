@@ -1,4 +1,4 @@
-import createServer from "./src/server/app";
+import createServer from "./app";
 
 createServer().then(({ app }) => {
   const port = process.env.PORT || 7456;

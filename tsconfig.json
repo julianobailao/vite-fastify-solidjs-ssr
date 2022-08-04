@@ -19,7 +19,10 @@
     "moduleResolution": "Node",
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ES2020"
+    "target": "ES2020",
+    "paths": {
+      "@/*": ["./src/*", "./dist/*"]
+    }
   },
   "include": ["src/**/*", "types/*", "*"]
 }

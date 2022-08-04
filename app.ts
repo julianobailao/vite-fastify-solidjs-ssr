@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getApi } from "./routes/api";
+import { getApi } from "./src/server/routes/api";
 import { generateHydrationScript } from "solid-js/web";
 
 const fs = require("fs");
@@ -57,7 +57,7 @@ export default async function createServer(root = __dirname, isProd = process.en
       let template, render;
       if (!isProd) {
         // always read fresh template in dev
-        template = fs.readFileSync(resolve("../../index.html"), "utf-8");
+        template = fs.readFileSync(resolve("index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
         render = (await vite.ssrLoadModule("src/client/entry-server.tsx")).render;
       } else {

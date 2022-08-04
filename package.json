@@ -9,7 +9,7 @@
   "author": "JonLuca DeCaro",
   "license": "MIT",
   "scripts": {
-    "dev": "npm run dev:server",
+    "dev": "npm run dev:server --config vite.config.ts",
     "dev:server": "nodemon --watch server.ts --watch src/server --exec 'yarn node --experimental-specifier-resolution=node --loader ts-node/esm server.ts'",
     "dev:client": "vite --config vite.config.ts dev",
     "build": "tsc -p tsconfig.prod.json && yarn build:client && yarn build:server && yarn copy-files",
