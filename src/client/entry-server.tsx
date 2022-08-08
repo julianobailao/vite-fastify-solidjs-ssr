@@ -1,6 +1,7 @@
-import { renderToStringAsync } from "solid-js/web";
+import { renderToString } from "solid-js/web";
 import { App } from "./App";
+import "./index.css";
 
-export async function render() {
-  return await renderToStringAsync(() => <App />);
+export async function render(url: string) {
+  return renderToString(() => <App />);
 }
