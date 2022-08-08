@@ -1,13 +1,14 @@
-import type { Request, Response, NextFunction } from "express";
+import type { FastifyRequest as Request, FastifyReply as Response } from "fastify";
 import { existsSync as checkDirectoryExists } from "fs";
 import fs from "fs/promises";
 import path from "path";
-import express from "express";
+import fastify from "fastify";
 import compression from "compression";
 import serveStatic from "serve-static";
 import { createServer as createViteServer } from "vite";
 import { generateHydrationScript } from "solid-js/web";
 import { getApi } from "./src/server/routes/api";
+import fastifyMiddie from "@fastify/middie";
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 const resolve = (p: string) => path.resolve(__dirname, p);
@@ -26,25 +27,33 @@ const getStyleSheets = async () => {
 };
 
 export default async function bootstrap(isProd = process.env.NODE_ENV === "production") {
-  const app = express();
+  const app: any = fastify({ logger: !isProd });
+
+  // adds middleware support to Fastify.
+  await app.register(fastifyMiddie);
+
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
   // can take control
   const vite = await createViteServer({
+    root: __dirname,
     server: { middlewareMode: true },
     appType: "custom",
     logLevel: isTest ? "error" : "info",
   });
 
   // use vite's connect instance as middleware
-  // if you use your own express router (express.Router()), you should use router.use
-  app.use(vite.middlewares);
+  app.use((req: Request, resp: Response, next: any) => {
+    if (req.url.includes("api")) return next();
+    return vite.middlewares(req as any, resp as any, next);
+  });
 
   const assetDirectory = resolve("assets");
   if (checkDirectoryExists(assetDirectory)) {
-    const requestHandler = express.static(assetDirectory);
-    app.use(requestHandler);
-    app.use("/assets", requestHandler);
+    await app.register(require("@fastify/static"), {
+      root: assetDirectory,
+      prefix: "/assets/",
+    });
   }
 
   if (isProd) {
@@ -56,11 +65,11 @@ export default async function bootstrap(isProd = process.env.NODE_ENV === "produ
     );
   }
 
-  app.use("/api", getApi);
+  app.get("/api", getApi);
 
   const stylesheets = getStyleSheets();
-  app.use("*", async (req: Request, res: Response, next: NextFunction) => {
-    const url = req.originalUrl;
+  app.get("*", async (req: Request, res: Response, next: any) => {
+    const url = req.url;
 
     try {
       // 1. Read index.html
@@ -89,7 +98,7 @@ export default async function bootstrap(isProd = process.env.NODE_ENV === "produ
       const html = template.replace(`<!--app-html-->`, appHtml).replace(`<!--head-->`, headThings.join(""));
 
       // 6. Send the rendered HTML back.
-      res.status(200).set({ "Content-Type": "text/html" }).end(html);
+      res.status(200).header("Content-Type", "text/html").send(html);
     } catch (e: any) {
       !isProd && vite.ssrFixStacktrace(e);
       console.log(e.stack);

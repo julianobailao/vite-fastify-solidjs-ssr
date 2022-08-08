@@ -1,10 +1,10 @@
 "use strict";
-import { Request, Response } from "express";
+import { FastifyRequest, FastifyReply } from "fastify";
 
 /**
  * List of API examples.
  * @route GET /api
  */
-export const getApi = async (req: Request, res: Response) => {
-  return res.json({ foo: "bar" }).status(200).end();
+export const getApi = async (req: FastifyRequest, res: FastifyReply) => {
+  return res.status(200).send({ foo: "bar" });
 };

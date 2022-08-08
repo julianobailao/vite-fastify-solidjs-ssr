@@ -1,9 +1,12 @@
 import { describe, expect, test } from "vitest";
-import request from "./request";
+import bootstrap from "../../../app";
 
 describe("SERVER", async () => {
+  const app = await bootstrap();
+
   test("should be testable", async () => {
-    const response = await request.get("/api").expect("Content-Type", /json/).expect(200);
-    expect(response.body.foo).toBe("bar");
+    const response = await app.inject({ method: "get", url: "/api" });
+    expect(response.statusCode).toBe(200);
+    expect(response.json().foo).toBe("bar");
   });
 });
