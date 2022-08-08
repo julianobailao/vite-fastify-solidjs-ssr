@@ -1,48 +1,56 @@
-import { Request, Response } from "express";
-import { getApi } from "./src/server/routes/api";
+import type { Request, Response, NextFunction } from "express";
+import { existsSync as checkDirectoryExists } from "fs";
+import fs from "fs/promises";
+import path from "path";
+import express from "express";
+import compression from "compression";
+import serveStatic from "serve-static";
+import { createServer as createViteServer } from "vite";
 import { generateHydrationScript } from "solid-js/web";
-
-const fs = require("fs");
-const path = require("path");
-const express = require("express");
-
+import { getApi } from "./src/server/routes/api";
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
-export default async function createServer(root = __dirname, isProd = process.env.NODE_ENV === "production") {
-  const resolve = (p: string) => path.resolve(__dirname, p);
+const resolve = (p: string) => path.resolve(__dirname, p);
 
-  const indexProd = isProd ? fs.readFileSync(resolve("client/index.html"), "utf-8") : "";
+const getStyleSheets = async () => {
+  const assetpath = resolve("dist/assets");
+  if (!checkDirectoryExists(assetpath)) return;
+  const files = await fs.readdir(assetpath);
+  const cssAssets = files.filter(l => l.endsWith(".css"));
+  const allContent: string[] = [];
+  for (const asset of cssAssets) {
+    const content = await fs.readFile(path.join(assetpath, asset), "utf-8");
+    allContent.push(`<style type="text/css">${content}</style>`);
+  }
+  return allContent.join("\n");
+};
 
+export default async function bootstrap(isProd = process.env.NODE_ENV === "production") {
   const app = express();
+  // Create Vite server in middleware mode and configure the app type as
+  // 'custom', disabling Vite's own HTML serving logic so parent server
+  // can take control
+  const vite = await createViteServer({
+    server: { middlewareMode: true },
+    appType: "custom",
+    logLevel: isTest ? "error" : "info",
+  });
 
-  const requestHandler = express.static(resolve("assets"));
-  app.use(requestHandler);
-  app.use("/assets", requestHandler);
+  // use vite's connect instance as middleware
+  // if you use your own express router (express.Router()), you should use router.use
+  app.use(vite.middlewares);
 
-  /**
-   * @type {import('vite').ViteDevServer}
-   */
-  let vite: any;
-  if (!isProd && !isTest) {
-    vite = await require("vite").createServer({
-      root,
-      logLevel: isTest ? "error" : "info",
-      server: {
-        middlewareMode: "ssr",
-        watch: {
-          // During tests we edit the files too fast and sometimes chokidar
-          // misses change events, so enforce polling for consistency
-          usePolling: true,
-          interval: 100,
-        },
-      },
-    });
-    // use vite's connect instance as middleware
-    app.use(vite.middlewares);
-  } else {
-    app.use(require("compression")());
+  const assetDirectory = resolve("assets");
+  if (checkDirectoryExists(assetDirectory)) {
+    const requestHandler = express.static(assetDirectory);
+    app.use(requestHandler);
+    app.use("/assets", requestHandler);
+  }
+
+  if (isProd) {
+    app.use(compression());
     app.use(
-      require("serve-static")(resolve("dist/client"), {
+      serveStatic(resolve("dist/client"), {
         index: false,
       }),
     );
@@ -50,33 +58,47 @@ export default async function createServer(root = __dirname, isProd = process.en
 
   app.use("/api", getApi);
 
-  app.use("*", async (req: Request, res: Response) => {
+  const stylesheets = getStyleSheets();
+  app.use("*", async (req: Request, res: Response, next: NextFunction) => {
+    const url = req.originalUrl;
+
     try {
-      const url = req.originalUrl;
+      // 1. Read index.html
+      let template = await fs.readFile(isProd ? resolve("dist/client/index.html") : resolve("index.html"), "utf-8");
 
-      let template, render;
-      if (!isProd) {
-        // always read fresh template in dev
-        template = fs.readFileSync(resolve("index.html"), "utf-8");
-        template = await vite.transformIndexHtml(url, template);
-        render = (await vite.ssrLoadModule("src/client/entry-server.tsx")).render;
-      } else {
-        template = indexProd;
-        render = require("./server/entry-server.js").render;
-      }
+      // 2. Apply Vite HTML transforms. This injects the Vite HMR client, and
+      //    also applies HTML transforms from Vite plugins, e.g. global preambles
+      //    from @vitejs/plugin-react
+      template = await vite.transformIndexHtml(url, template);
 
-      const context = {};
-      const appHtml = await render(url, context);
-      let html = template.replace(`<!--app-html-->`, appHtml);
-      html = template.replace(`<!--hydratation-script-->`, generateHydrationScript());
+      // 3. Load the server entry. vite.ssrLoadModule automatically transforms
+      //    your ESM source code to be usable in Node.js! There is no bundling
+      //    required, and provides efficient invalidation similar to HMR.
+      let productionBuildPath = path.join(__dirname, "./dist/server/entry-server.mjs");
+      let devBuildPath = path.join(__dirname, "./src/client/entry-server.tsx");
+      const { render } = await vite.ssrLoadModule(isProd ? productionBuildPath : devBuildPath);
 
+      // 4. render the app HTML. This assumes entry-server.js's exported `render`
+      //    function calls appropriate framework SSR APIs,
+      //    e.g. ReactDOMServer.renderToString()
+      const appHtml = await render(url);
+      const cssAssets = isProd ? "" : await stylesheets;
+      const headThings = [cssAssets, generateHydrationScript()];
+
+      // 5. Inject the app-rendered HTML into the template.
+      const html = template.replace(`<!--app-html-->`, appHtml).replace(`<!--head-->`, headThings.join(""));
+
+      // 6. Send the rendered HTML back.
       res.status(200).set({ "Content-Type": "text/html" }).end(html);
     } catch (e: any) {
       !isProd && vite.ssrFixStacktrace(e);
       console.log(e.stack);
-      res.status(500).end(e.stack);
+      // If an error is caught, let Vite fix the stack trace so it maps back to
+      // your actual source code.
+      vite.ssrFixStacktrace(e);
+      next(e);
     }
   });
 
-  return { app, vite };
+  return app;
 }
