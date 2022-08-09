@@ -27,7 +27,7 @@ const getStyleSheets = async () => {
 };
 
 export default async function bootstrap(isProd = process.env.NODE_ENV === "production") {
-  const app: any = fastify({ logger: !isProd });
+  const app: any = fastify({ logger: !isProd && !isTest });
 
   // adds middleware support to Fastify.
   await app.register(fastifyMiddie);
