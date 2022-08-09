@@ -6,12 +6,15 @@ import { createServer } from "../../../server";
 
 describe("basic", async () => {
   let server: any;
+  let port: number;
   let browser: Browser;
   let page: Page;
   const { getByRole } = queries;
 
   beforeAll(async () => {
-    server = await createServer();
+    const bootstrap = await createServer();
+    server = bootstrap.app;
+    port = Number(bootstrap.port);
 
     browser = await puppeteer.launch({
       headless: true,
@@ -29,7 +32,7 @@ describe("basic", async () => {
 
   test("should have the correct title", async () => {
     try {
-      await page.goto("http://localhost:7456");
+      await page.goto(`http://localhost:${port}`);
       const $document = await getDocument(page);
       const $title = await getByRole($document, "heading", { name: /Hi/g });
       expect($title).toBeDefined();

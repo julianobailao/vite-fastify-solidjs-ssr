@@ -7,7 +7,7 @@ export async function createServer(isProd = process.env.NODE_ENV === "production
     console.log(`App is listening on http://localhost:${port}`);
   });
 
-  return app;
+  return { app, port };
 }
 
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
