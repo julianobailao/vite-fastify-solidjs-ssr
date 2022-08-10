@@ -1,3 +1,4 @@
+import "module-alias/register";
 import type { FastifyRequest as Request, FastifyReply as Response } from "fastify";
 import { existsSync as checkDirectoryExists } from "fs";
 import fs from "fs/promises";

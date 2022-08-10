@@ -1,5 +1,5 @@
-import { ExampleService } from "../server/services/example.service";
-import { ExampleDTO, ORIGIN } from "../shared/dtos/example.dto";
+import { ExampleService } from "@server/services/example.service";
+import { ExampleDTO, ORIGIN } from "@shared/dtos/example.dto";
 import { App } from "./App";
 import "./index.css";
 

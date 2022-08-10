@@ -1,7 +1,7 @@
 import { Component } from "solid-js";
 import Main from "./pages/Main";
 import { Footer } from "./components/Footer";
-import { ExampleDTO } from "src/shared/dtos/example.dto";
+import { ExampleDTO } from "@shared/dtos/example.dto";
 
 export const App: Component<ExampleDTO> = (props: ExampleDTO) => {
   return (

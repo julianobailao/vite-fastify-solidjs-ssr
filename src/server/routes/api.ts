@@ -1,7 +1,7 @@
 "use strict";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { ExampleDTO, ORIGIN } from "../../shared/dtos/example.dto";
-import { ExampleService } from "../services/example.service";
+import { ExampleDTO, ORIGIN } from "@shared/dtos/example.dto";
+import { ExampleService } from "@server/services/example.service";
 
 /**
  * List of API examples.

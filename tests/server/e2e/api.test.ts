@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import bootstrap from "../../../app";
+import bootstrap from "@/app";
 
 describe("SERVER", async () => {
   const app = await bootstrap();

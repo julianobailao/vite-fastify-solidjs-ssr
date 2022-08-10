@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import puppeteer from "puppeteer";
 import type { Browser, Page } from "puppeteer";
 import { getDocument, queries } from "pptr-testing-library";
-import { createServer } from "../../../server";
+import { createServer } from "@/server";
 
 describe("basic", async () => {
   let server: any;
@@ -26,7 +26,7 @@ describe("basic", async () => {
   afterAll(async () => {
     await browser.close();
     await new Promise<void>((resolve, reject) => {
-      server.close(error => (error ? reject(error) : resolve()));
+      server.close((error: any) => (error ? reject(error) : resolve()));
     });
   });
 
