@@ -2,19 +2,16 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import puppeteer from "puppeteer";
 import type { Browser, Page } from "puppeteer";
 import { getDocument, queries } from "pptr-testing-library";
-import { createServer } from "@/server";
+import { App } from "@root/server";
 
 describe("basic", async () => {
-  let server: any;
-  let port: number;
+  let app: App;
   let browser: Browser;
   let page: Page;
   const { getByRole } = queries;
 
   beforeAll(async () => {
-    const bootstrap = await createServer();
-    server = bootstrap.app;
-    port = Number(bootstrap.port);
+    app = await App.bootstrap();
 
     browser = await puppeteer.launch({
       headless: true,
@@ -26,13 +23,13 @@ describe("basic", async () => {
   afterAll(async () => {
     await browser.close();
     await new Promise<void>((resolve, reject) => {
-      server.close((error: any) => (error ? reject(error) : resolve()));
+      app.web.server.close((error: any) => (error ? reject(error) : resolve()));
     });
   });
 
   test("should have the correct title", async () => {
     try {
-      await page.goto(`http://localhost:${port}`);
+      await page.goto(`http://localhost:${app.port}`);
       const $document = await getDocument(page);
       const $title = await getByRole($document, "heading", { name: /Hi/g });
       expect($title).toBeDefined();

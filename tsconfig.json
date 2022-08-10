@@ -8,6 +8,7 @@
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "jsx": "preserve",
@@ -23,7 +24,7 @@
     "types": ["vite", "vite/client", "vitest"],
     "typeRoots": ["node_modules/@types", "node_modules/vitest/dist"],
     "paths": {
-      "@/*": ["./*"],
+      "@root/*": ["./*"],
       "@client/*": ["src/client/*"],
       "@server/*": ["src/server/*"],
       "@shared/*": ["src/shared/*"]
