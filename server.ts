@@ -1,4 +1,4 @@
-import "module-alias/register";
+import moduleAlias from "module-alias";
 import { existsSync as checkDirectoryExists } from "fs";
 import fs from "fs/promises";
 import path from "path";
@@ -35,6 +35,13 @@ export class App {
 
   public resolve(p: string) {
     return pathResolve(p);
+  }
+
+  private registerModuleLoader() {
+    moduleAlias.addAlias("@root", this.resolve("."));
+    moduleAlias.addAlias("@client", this.resolve("./src/client"));
+    moduleAlias.addAlias("@server", this.resolve("./src/server"));
+    moduleAlias.addAlias("@shared", this.resolve("./src/shared"));
   }
 
   private async registerMiddlewares() {
@@ -142,6 +149,7 @@ export class App {
   public static async bootstrap() {
     if (!this._instance) {
       this._instance = new App();
+      await this._instance.registerModuleLoader();
       await this._instance.registerMiddlewares();
       await this._instance.startViteServer();
       await this._instance.registerAppDecorate();

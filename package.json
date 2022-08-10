@@ -8,12 +8,6 @@
   },
   "author": "Juliano Bailão",
   "license": "MIT",
-  "_moduleAliases": {
-    "@": "./dist",
-    "@client": "./dist/src/client",
-    "@server": "./dist/src/server",
-    "@shared": "./dist/src/shared"
-  },
   "scripts": {
     "dev": "npm run dev:server --config vite.config.ts",
     "dev:server": "nodemon --watch server.ts --watch src/server --exec 'ts-node server.ts'",
