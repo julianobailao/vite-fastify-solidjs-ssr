@@ -9,10 +9,9 @@ import { createServer as createViteServer } from "vite";
 import { generateHydrationScript } from "solid-js/web";
 import { getApi } from "./src/server/routes/api";
 import fastifyMiddie from "@fastify/middie";
+
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
-
 const resolve = (p: string) => path.resolve(__dirname, p);
-
 const getStyleSheets = async () => {
   const assetpath = resolve("dist/assets");
   if (!checkDirectoryExists(assetpath)) return;

@@ -2,7 +2,7 @@ import { describe, test } from "vitest";
 import { render } from "solid-testing-library";
 import { Footer } from "../../../src/client/components/Footer";
 
-describe("CLIENT", () => {
+describe("CLIENT UNIT", () => {
   test("should be testable", ({ expect }) => {
     expect(1 + 1).toBe(2);
   });

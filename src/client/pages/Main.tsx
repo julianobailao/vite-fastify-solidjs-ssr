@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 
 const Main = () => {
   const [name, setName] = createSignal("");
@@ -7,6 +7,14 @@ const Main = () => {
   const interval = setInterval(() => setCount(c => c + 1), 1000);
   onCleanup(() => clearInterval(interval));
 
+  const [foo, setFoo] = createSignal({});
+
+  onMount(() => {
+    fetch("/api")
+      .then(res => res.json())
+      .then(res => setFoo(res));
+  });
+
   return (
     <div class="inline-block xl:w-1/4 lg:w-1/3  p-5 rounded shadow bg-white font-sans m-5">
       <div class="flex items-center flex-col pt-10">
@@ -14,6 +22,7 @@ const Main = () => {
         <h2 class={"w-full p-5 items-center text-center min-w-[320px]"} style={{ color: "purple" }}>
           This is a Vite Solidjs SSR Tailwind boilerplate! --{count()}--
         </h2>
+        <h3>Data loaded from server: {JSON.stringify(foo())}</h3>
         <input
           placeholder={"Enter your name"}
           onkeyup={e => setName(e.currentTarget.value)}
