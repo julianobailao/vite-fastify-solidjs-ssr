@@ -1,5 +1,5 @@
 import { hydrate } from "solid-js/web";
-import { App } from "./App";
-import "./index.css";
+import { ORIGIN } from "../shared/dtos/example.dto";
+import entry from "./entry";
 
-hydrate(() => <App />, document.getElementById("app")!);
+hydrate(() => entry(ORIGIN.CLIENT), document.getElementById("app")!);

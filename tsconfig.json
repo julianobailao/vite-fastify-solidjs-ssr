@@ -24,7 +24,6 @@
     "typeRoots": ["node_modules/@types", "node_modules/vitest/dist"]
   },
   "include": ["src/**/*", "types/*", "node_modules/vitest/dist/index.d.ts", "server.ts"],
-  "exclude": ["**/__tests__/**"],
   "ts-node": {
     "transpileOnly": true,
     "compilerOptions": {
