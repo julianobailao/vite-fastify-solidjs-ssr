@@ -1,15 +1,16 @@
 import { GET, RequestHandler } from "fastify-decorators";
-import Munchy from "munchy";
-import { PassThrough } from "stream";
+import Minipass from "minipass";
 
-const getResponseOutput = (req, delay = 2000) => {
-  const output = new PassThrough();
+const getResponseOutput = (req, delay = 2000): Minipass => {
+  const output = new Minipass();
   const chunks = [
+    `<html><head></head><body>`,
     `<h1>Hello</h1>`,
     `<h1>What's your name?</h1>`,
     `<h1>Nice to meet you, I am fastify.</h1>`,
     `<h1>Fantastic to be streaming with you.</h1>`,
     `<h1>Bye, have a nice day.</h1>`,
+    `</body></html>\n`,
   ];
 
   let ix = 0;
@@ -47,12 +48,7 @@ const getResponseOutput = (req, delay = 2000) => {
 })
 export default class StreamExampleHandler extends RequestHandler {
   async handle() {
-    const munchy = new Munchy();
-
-    const data = getResponseOutput(this.request);
-    munchy.munch(`<html><head></head><body>`, data, `</body></html>\n`, null);
-
     this.reply.header("Content-Type", "text/html").code(200);
-    this.reply.send(munchy);
+    this.reply.send(getResponseOutput(this.request));
   }
 }
