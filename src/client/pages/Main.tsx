@@ -1,10 +1,11 @@
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, useContext } from "solid-js";
+import { CounterContext } from "@client/contexts/counter";
 
 const Main = () => {
+  const { state, increment } = useContext(CounterContext)!;
   const [name, setName] = createSignal("");
-  const [count, setCount] = createSignal(0);
 
-  const interval = setInterval(() => setCount(c => c + 1), 1000);
+  const interval = setInterval(() => increment(), 1000);
   onCleanup(() => clearInterval(interval));
 
   const [foo, setFoo] = createSignal({});
@@ -23,11 +24,11 @@ const Main = () => {
           <h2 class={"w-full p-5 items-center text-center min-w-[320px]"} style={{ color: "purple" }}>
             This is a Vite Solidjs SSR Tailwind boilerplate!
           </h2>
-          <h3>Counter: {count()}</h3>
+          <h3>Counter: {state.count}</h3>
 
           <input
             placeholder={"Enter your name"}
-            onkeyup={e => setName(e.currentTarget.value)}
+            onKeyUp={e => setName(e.currentTarget.value)}
             style={{ background: "#8080802e" }}
             class="focus:ring-indigo-500 focus:border-indigo-500 block w-full text-2xl border-gray-300 rounded-md p-2"
           />
