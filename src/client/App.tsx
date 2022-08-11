@@ -1,8 +1,8 @@
 import { Component } from "solid-js";
-import Main from "./pages/Main";
-import { Footer } from "./components/Footer";
+import Main from "@client/pages/Main";
+import { Footer } from "@client/components/Footer";
 import { ExampleDTO } from "@shared/dtos/example.dto";
-import { CounterProvider } from "./contexts/counter";
+import { CounterProvider } from "@client/contexts/counter";
 
 export const App: Component<ExampleDTO> = (props: ExampleDTO) => {
   return (

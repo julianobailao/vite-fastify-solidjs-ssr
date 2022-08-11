@@ -1,22 +1,24 @@
 import { Accessor, createContext, JSX } from "solid-js";
-import { createStoredSignal } from "../hooks/createStoredSignal";
+import { createStoragedStore } from "@client/hooks/createStoragedStore";
+
+export type StateType = { count: number };
 
 export const CounterContext = createContext<{
-  count: Accessor<number>;
+  state: StateType;
   increment(): void;
   decrement(): void;
 }>();
 
 export function CounterProvider(props: { children: JSX.Element }) {
-  const [count, setCount] = createStoredSignal<number>("count", 0);
+  const { state, setState } = createStoragedStore<StateType>("count", { count: 0 });
 
   const counter = {
-    count,
+    state,
     increment() {
-      setCount(count => count++);
+      setState("count", count => count + 1);
     },
     decrement() {
-      setCount(count => count--);
+      setState("count", count => count + 1);
     },
   };
 
