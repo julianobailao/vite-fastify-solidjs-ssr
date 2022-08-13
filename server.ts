@@ -1,4 +1,4 @@
-import moduleAlias from "module-alias";
+import "./aliases";
 import { existsSync as checkDirectoryExists } from "fs";
 import fs from "fs/promises";
 import path from "path";
@@ -10,6 +10,10 @@ import { createServer as createViteServer } from "vite";
 import fastifyMiddie from "@fastify/middie";
 import { FastifyInstance as FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
+// @ActionHandlers
+import StreamExampleHandler from "@server/handlers/stream-example.handler";
+import SpaRendererHandler from "@server/handlers/spa-render.handler";
+import ApiHandler from "@server/handlers/api.handler";
 
 const root = __dirname;
 const pathResolve = (p: string) => path.resolve(root, p);
@@ -29,19 +33,12 @@ export class App {
   private _host!: string;
 
   private constructor() {
-    this._web = fastify({ logger: !this.isProd && !this.isTest });
+    this._web = fastify({ logger: !App.isProd && !App.isTest });
     this._assetDirectory = this.resolve("assets");
   }
 
   public resolve(p: string) {
     return pathResolve(p);
-  }
-
-  private registerModuleLoader() {
-    moduleAlias.addAlias("@root", this.resolve("."));
-    moduleAlias.addAlias("@client", this.resolve("./src/client"));
-    moduleAlias.addAlias("@server", this.resolve("./src/server"));
-    moduleAlias.addAlias("@shared", this.resolve("./src/shared"));
   }
 
   private async registerMiddlewares() {
@@ -53,7 +50,7 @@ export class App {
       root,
       server: { middlewareMode: true },
       appType: "custom",
-      logLevel: this.isTest ? "error" : "info",
+      logLevel: App.isTest ? "error" : "info",
     });
     this._web.use(this._vite.middlewares);
   }
@@ -69,8 +66,7 @@ export class App {
 
   private async registerFastifyDecorators() {
     await this._web.register(fastifyDecorators, {
-      directory: this.resolve(`src/server/handlers`),
-      mask: /\.handler\./,
+      controllers: [ApiHandler, SpaRendererHandler, StreamExampleHandler],
     });
   }
 
@@ -82,7 +78,7 @@ export class App {
       });
     }
 
-    if (!this.isProd) return;
+    if (!App.isProd) return;
     // TODO: Find a way to this work with vite brotli compression
     //this._web.use(compression());
     this._web.use(
@@ -104,11 +100,11 @@ export class App {
     });
   }
 
-  public get isProd() {
+  public static get isProd() {
     return process.env.NODE_ENV === "production";
   }
 
-  public get isTest() {
+  public static get isTest() {
     return process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
   }
 
@@ -121,11 +117,11 @@ export class App {
   }
 
   public get port(): number {
-    return this.port;
+    return this._port;
   }
 
-  public get host(): number {
-    return this.host;
+  public get host(): string {
+    return this._host;
   }
 
   public async getStyleSheets(): Promise<string | undefined> {
@@ -149,18 +145,22 @@ export class App {
   public static async bootstrap() {
     if (!this._instance) {
       this._instance = new App();
-      await this._instance.registerModuleLoader();
       await this._instance.registerMiddlewares();
       await this._instance.startViteServer();
       await this._instance.registerAppDecorate();
       await this._instance.registerFastifyDecorators();
       await this._instance.registerStaticServer();
-      // TODO: Find a way to remove this if
-      if (!this._instance.isTest) await this._instance.up();
+      await this._instance.up();
     }
 
     return this._instance;
   }
+
+  public static async initialize() {
+    if (App.isTest) return;
+
+    return await App.bootstrap();
+  }
 }
 
-App.bootstrap();
+App.initialize();

@@ -12,7 +12,6 @@ describe("basic", async () => {
 
   beforeAll(async () => {
     app = await App.bootstrap();
-
     browser = await puppeteer.launch({
       headless: true,
       ignoreDefaultArgs: ["--disable-extensions"],
@@ -27,7 +26,7 @@ describe("basic", async () => {
     });
   });
 
-  test("should have the correct title", async () => {
+  test("should be able to test page", async () => {
     try {
       await page.goto(`http://localhost:${app.port}`);
       const $document = await getDocument(page);

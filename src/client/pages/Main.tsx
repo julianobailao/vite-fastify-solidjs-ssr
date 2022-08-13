@@ -1,5 +1,6 @@
-import { createEffect, createSignal, onCleanup, onMount, useContext } from "solid-js";
+import { lazy, createSignal, onCleanup, Suspense, useContext } from "solid-js";
 import { CounterContext } from "@client/contexts/counter";
+import SuspenseContent from "../components/SuspenseContent";
 
 const Main = () => {
   const { state, increment } = useContext(CounterContext)!;
@@ -8,21 +9,14 @@ const Main = () => {
   const interval = setInterval(() => increment(), 1000);
   onCleanup(() => clearInterval(interval));
 
-  const [foo, setFoo] = createSignal({});
-
-  onMount(() => {
-    fetch("/api")
-      .then(res => res.json())
-      .then(res => setFoo(res));
-  });
-
   return (
     <div class="flex flex-col w-full items-center">
       <div class="inline-block xl:w-1/4 lg:w-1/3  p-5 rounded shadow bg-white font-sans m-5">
         <div class="flex items-center flex-col pt-10">
           <h1 class="font-bold text-gray-900 text-5xl lg:text-7xl text-center ">Hi{name() ? `, ${name()}` : ""}!</h1>
+
           <h2 class={"w-full p-5 items-center text-center min-w-[320px]"} style={{ color: "purple" }}>
-            This is a Vite Solidjs SSR Tailwind boilerplate!
+            This sis a Vite Solidjs SSR Tailwind boilerplate!
           </h2>
           <h3>Counter: {state.count}</h3>
 
@@ -34,9 +28,7 @@ const Main = () => {
           />
         </div>
       </div>
-      <div class="inline-block xl:w-1/4 lg:w-1/3  p-5 rounded shadow bg-white font-sans m-5">
-        <h3>Data loaded from ajax: {JSON.stringify(foo())}</h3>
-      </div>
+      <SuspenseContent />
     </div>
   );
 };

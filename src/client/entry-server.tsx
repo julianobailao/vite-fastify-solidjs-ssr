@@ -1,9 +1,8 @@
 import { renderToString as solidRenderToString, renderToStream as solidRenderToStream } from "solid-js/web";
-import { ORIGIN } from "@shared/dtos/example.dto";
 import entry from "./entry";
 
 export async function renderToString(url: string) {
-  return solidRenderToString(() => entry(ORIGIN.SERVER));
+  return solidRenderToString(() => entry());
 }
 
 export async function renderToStream(
@@ -13,7 +12,7 @@ export async function renderToStream(
   },
   done: CallableFunction,
 ) {
-  solidRenderToStream(() => entry(ORIGIN.SERVER), {
+  solidRenderToStream(() => entry(), {
     onCompleteAll() {
       done();
     },

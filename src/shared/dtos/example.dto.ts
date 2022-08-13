@@ -1,9 +1,7 @@
-export enum ORIGIN {
-  CLIENT = "client",
-  SERVER = "server",
-}
+import { ORIGIN } from "../enums/origin.enum";
 
 export interface ExampleDTO {
   foo: string;
   origin: ORIGIN;
+  date: Date;
 }

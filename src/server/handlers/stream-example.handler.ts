@@ -1,7 +1,13 @@
-import { GET, RequestHandler } from "fastify-decorators";
+import type { FastifyRequest } from "fastify";
+import { GET } from "fastify-decorators";
 import Minipass from "minipass";
+import BaseHandler from "./base-handler";
 
-const getResponseOutput = (req, delay = 2000): Minipass => {
+interface QueryFail {
+  fail?: number | string;
+}
+
+const getResponseOutput = (req: FastifyRequest, delay = 2000): Minipass => {
   const output = new Minipass();
   const chunks = [
     `<html><head></head><body>`,
@@ -14,13 +20,8 @@ const getResponseOutput = (req, delay = 2000): Minipass => {
   ];
 
   let ix = 0;
+  const fail = Number((req.query as QueryFail).fail || -1);
   const interval = setInterval(() => output.write("."), 100);
-
-  let fail = -1;
-
-  if (req.query.fail) {
-    fail = parseInt(req.query.fail);
-  }
 
   const send = () => {
     console.log(`sending ${ix} ${chunks[ix]}`);
@@ -46,7 +47,7 @@ const getResponseOutput = (req, delay = 2000): Minipass => {
 @GET({
   url: "/stream",
 })
-export default class StreamExampleHandler extends RequestHandler {
+export default class StreamExampleHandler extends BaseHandler {
   async handle() {
     this.reply.header("Content-Type", "text/html").code(200);
     this.reply.send(getResponseOutput(this.request));
