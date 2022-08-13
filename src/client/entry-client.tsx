@@ -1,5 +1,4 @@
 import { hydrate } from "solid-js/web";
-import { App } from "./App";
-import "./index.css";
+import entry from "./entry";
 
-hydrate(() => <App />, document.getElementById("app")!);
+hydrate(() => entry(), document.getElementById("app")!);
