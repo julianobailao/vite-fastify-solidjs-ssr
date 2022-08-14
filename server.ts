@@ -94,7 +94,7 @@ export class App {
     this._port = Number(port);
     this._host = host;
 
-    await this._web.listen(this._port, this._host, () => {
+    await this._web.listen({ port: this._port, host: this._host }, () => {
       this._isRunning = true;
       console.log(`App is listening on port: ${port}`);
     });
