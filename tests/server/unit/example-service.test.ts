@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
 import { ExampleService } from "@server/services/example.service";
-import { ORIGIN } from "@shared/dtos/example.dto";
+import { ORIGIN } from "@shared/enums/origin.enum";
 
 describe("SERVER UNIT", () => {
   test("should be able to test a service", ({ expect }) => {

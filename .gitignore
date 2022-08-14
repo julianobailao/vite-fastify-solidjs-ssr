@@ -19,10 +19,6 @@ public/css/main.css
 # Coverage reports
 coverage
 
-# Tests snapshot
-__snapshots__
-**/__snapshots__
-
 # API keys and secrets
 .env
 
