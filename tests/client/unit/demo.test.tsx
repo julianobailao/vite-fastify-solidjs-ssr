@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
 import { render } from "solid-testing-library";
-import { Footer } from "../../../src/client/components/Footer";
+import { Footer } from "@client/components/Footer";
 
 describe("CLIENT UNIT", () => {
   test("should be testable", ({ expect }) => {
@@ -8,7 +8,8 @@ describe("CLIENT UNIT", () => {
   });
 
   test("should be able to test component", ({ expect }) => {
-    const { getByText } = render(() => <Footer />);
+    const { getByText, unmount } = render(() => <Footer />);
     expect(getByText("Repo")).toMatchSnapshot();
+    unmount();
   });
 });
