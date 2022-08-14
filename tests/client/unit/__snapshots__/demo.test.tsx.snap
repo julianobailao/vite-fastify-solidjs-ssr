@@ -1,0 +1,10 @@
+// Vitest Snapshot v1
+
+exports[`CLIENT UNIT > should be able to test component 1`] = `
+<a
+  class="p-1"
+  href="https://github.com/julianobailao/vite-typescript-solidjs-ssr"
+>
+  Repo
+</a>
+`;
