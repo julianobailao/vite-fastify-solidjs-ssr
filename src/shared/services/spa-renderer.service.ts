@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import Minipass from "minipass";
 import type { FastifyRequest } from "fastify";
-import type { App, ServerInstance } from "@root/server";
+import type { ServerInstance } from "@root/server";
+import { App } from "@root/server";
 import { generateHydrationScript } from "solid-js/web";
 import { RENDER_TYPE } from "../enums/render-type.enum";
 
@@ -24,12 +25,12 @@ export class SpaRendererService {
   }
 
   private async _getHeadIncludes(): Promise<string> {
-    const cssAssets = this.$app.isProd ? "" : await this._getStyleSheets();
+    const cssAssets = App.isProd ? "" : await this._getStyleSheets();
     return [cssAssets, generateHydrationScript()].join("");
   }
 
   private async _getIndexHtml(): Promise<string> {
-    const indexHtmlPath = `${this.$app.isProd ? "dist/client/" : ""}index.html`;
+    const indexHtmlPath = `${App.isProd ? "dist/client/" : ""}index.html`;
     let html = await fs.readFile(this.$app.resolve(indexHtmlPath), "utf-8");
     html = await this.$app.vite.transformIndexHtml(this.url, html);
     return html.replace(SpaRendererService.HEAD_INJECTION, await this._getHeadIncludes());
@@ -38,7 +39,7 @@ export class SpaRendererService {
   private async _getRenderers() {
     let productionBuildPath = this.$app.resolve("./dist/server/entry-server.mjs");
     let devBuildPath = this.$app.resolve("./src/client/entry-server.tsx");
-    return await this.$app.vite.ssrLoadModule(this.$app.isProd ? productionBuildPath : devBuildPath);
+    return await this.$app.vite.ssrLoadModule(App.isProd ? productionBuildPath : devBuildPath);
   }
 
   private async _renderToString(html: string): Promise<string> {
