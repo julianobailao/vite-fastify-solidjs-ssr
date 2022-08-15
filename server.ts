@@ -3,7 +3,6 @@ import { existsSync as checkDirectoryExists } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import fastify from "fastify";
-import serveStatic from "serve-static";
 import { bootstrap as fastifyDecorators } from "fastify-decorators";
 import type { ViteDevServer } from "vite";
 import { createServer as createViteServer } from "vite";
@@ -34,7 +33,7 @@ export class App {
 
   private constructor() {
     this._web = fastify({ logger: !App.isProd && !App.isTest });
-    this._assetDirectory = this.resolve("assets");
+    this._assetDirectory = this.resolve(!App.isProd ? "./dist/assets" : "assets");
   }
 
   public resolve(p: string) {
@@ -71,21 +70,15 @@ export class App {
   }
 
   private async registerStaticServer() {
-    if (checkDirectoryExists(this._assetDirectory)) {
+    const enabledCompression = App.isProd && !!process.env.ENABLED_COMPRESSION;
+    if (checkDirectoryExists(this._assetDirectory))
       await this._web.register(require("@fastify/static"), {
         root: this._assetDirectory,
         prefix: "/assets/",
+        preCompressed: enabledCompression,
       });
-    }
 
-    if (!App.isProd) return;
-    // TODO: Find a way to this work with vite brotli compression
-    //this._web.use(compression());
-    this._web.use(
-      serveStatic(this.resolve("dist/client"), {
-        index: false,
-      }),
-    );
+    if (enabledCompression) await this._web.register(import("@fastify/compress"), { encodings: ["br", "gzip"] });
   }
 
   public async up(port = process.env.PORT || 7456, host = process.env.HOST || "0.0.0.0") {
@@ -101,6 +94,7 @@ export class App {
   }
 
   public static get isProd() {
+    console.log(process.env.NODE_ENV);
     return process.env.NODE_ENV === "production";
   }
 
