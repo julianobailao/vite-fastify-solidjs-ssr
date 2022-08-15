@@ -16,5 +16,8 @@ export default defineConfig({
     deps: {
       inline: [/solid-testing-library/],
     },
+    coverage: {
+      reportsDirectory: "./coverage/client",
+    },
   },
 });

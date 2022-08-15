@@ -11,5 +11,8 @@ export default defineConfig({
     },
     threads: false,
     isolate: false,
+    coverage: {
+      reportsDirectory: "./coverage/server",
+    },
   },
 });
