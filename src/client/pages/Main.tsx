@@ -1,4 +1,4 @@
-import { lazy, createSignal, onCleanup, Suspense, useContext } from "solid-js";
+import { createSignal, onCleanup, useContext } from "solid-js";
 import { CounterContext } from "@client/contexts/counter";
 import SuspenseContent from "../components/SuspenseContent";
 
