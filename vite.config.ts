@@ -1,15 +1,24 @@
+import "dotenv/config";
 import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
-import compress from "vite-plugin-compress";
+import compress from "vite-plugin-compression";
 import config from "./vite.config.default";
 
 const isProd = process.env.NODE_ENV === "production";
-const enableCompress = isProd && (!!process.env.ENABLE_COMPRESSION || true);
+const compressByAlgotithm = (algorithm: "gzip" | "brotliCompress") => {
+  const enableCompress = isProd && !!process.env.ENABLED_COMPRESSION;
+  if (!enableCompress) return;
+  return compress({ verbose: true, algorithm });
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
   ...config,
-  plugins: [enableCompress && compress({ verbose: true, exclude: ["ssr-manifest.json"] }), solid({ ssr: true })],
+  plugins: [
+    compressByAlgotithm("brotliCompress"), // Compress with brotli (.br)
+    compressByAlgotithm("gzip"), // Compress with gzip (.gz)
+    solid({ ssr: true }),
+  ],
   server: { port: 3000 },
   build: {
     minify: isProd,
