@@ -1,10 +1,8 @@
+import "dotenv/config";
 import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
 import compress from "vite-plugin-compression";
 import config from "./vite.config.default";
-
-process.env.NODE_ENV = "production";
-process.env.ENABLED_COMPRESSION = "true";
 
 const isProd = process.env.NODE_ENV === "production";
 const compressByAlgotithm = (algorithm: "gzip" | "brotliCompress") => {

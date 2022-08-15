@@ -81,7 +81,7 @@ export class App {
     if (enabledCompression) await this._web.register(import("@fastify/compress"), { encodings: ["br", "gzip"] });
   }
 
-  public async up(port = process.env.PORT || 7456, host = process.env.HOST || "0.0.0.0") {
+  public async up(port = Number(process.env.APP_PORT || 7456), host = process.env.APP_HOST || "0.0.0.0") {
     if (this._isRunning) throw new Error(`Application is already running on port: ${this._port}`);
 
     this._port = Number(port);
