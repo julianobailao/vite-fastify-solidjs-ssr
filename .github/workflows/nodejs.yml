@@ -23,11 +23,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Run client unit tests
-        run: yarn run test:client
+        run: yarn run test:client:unit
       - name: Run client e2e tests
         run: yarn run test:client:e2e
       - name: Run server unit tests
-        run: yarn run test:server
+        run: yarn run test:server:unit
       - name: Run server e2e tests
         run: yarn run test:server:e2e
       - name: Build
