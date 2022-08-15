@@ -30,8 +30,9 @@ export class SpaRendererService {
   }
 
   private async _getIndexHtml(): Promise<string> {
-    const indexHtmlPath = `${App.isProd ? "dist/client/" : ""}index.html`;
-    let html = await fs.readFile(this.$app.resolve(indexHtmlPath), "utf-8");
+    const devHtmlPath = `index.html`;
+    const productionHtmlPath = `dist/client/index.html`;
+    let html = await fs.readFile(this.$app.resolve(App.isProd ? productionHtmlPath : devHtmlPath), "utf-8");
     html = await this.$app.vite.transformIndexHtml(this.url, html);
     return html.replace(SpaRendererService.HEAD_INJECTION, await this._getHeadIncludes());
   }
