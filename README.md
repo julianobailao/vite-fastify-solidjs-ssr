@@ -1,6 +1,7 @@
 # Vite Typescript Solidjs SSR
 
 [![Node CI](https://github.com/julianobailao/vite-typescript-solidjs-ssr/actions/workflows/nodejs.yml/badge.svg)](https://github.com/julianobailao/vite-typescript-solidjs-ssr/actions/workflows/nodejs.yml)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/julianobailao/vite-fastify-solidjs-ssr.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/julianobailao/vite-fastify-solidjs-ssr/context:javascript)
 
 A _blazingly_ modern web development stack. This template repo tries to achieve the minimum viable example for each of the following:
 
