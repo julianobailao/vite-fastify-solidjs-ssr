@@ -1,4 +1,4 @@
-import { Accessor, createContext, JSX } from "solid-js";
+import { createContext, JSX } from "solid-js";
 import { createStoragedStore } from "@client/hooks/createStoragedStore";
 
 export type StateType = { count: number };

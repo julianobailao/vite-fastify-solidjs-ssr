@@ -12,12 +12,12 @@ const Greetings = lazy(async () => {
 export const SuspenseContent = () => {
   return (
     <>
-      <div class="xl:w-1/4 lg:w-1/3 p-5 rounded shadow bg-white font-sans m-5 mt-0">
+      <div class="w-full p-5 rounded shadow bg-white font-sans m-5 mt-0">
         <Suspense fallback={<Loader />}>
           <Greetings />
         </Suspense>
       </div>
-      <div class="xl:w-1/4 lg:w-1/3 p-5 rounded shadow bg-white font-sans m-5 mt-0">
+      <div class="w-full p-5 rounded shadow bg-white font-sans m-5 mt-0">
         <Suspense fallback={<Loader />}>
           <AjaxDataLoader />
         </Suspense>

@@ -1,4 +1,4 @@
-import { lazy, createSignal, onCleanup, Suspense, useContext } from "solid-js";
+import { createSignal, onCleanup, useContext } from "solid-js";
 import { CounterContext } from "@client/contexts/counter";
 import SuspenseContent from "../components/SuspenseContent";
 
@@ -10,13 +10,13 @@ const Main = () => {
   onCleanup(() => clearInterval(interval));
 
   return (
-    <div class="flex flex-col w-full items-center">
-      <div class="inline-block xl:w-1/4 lg:w-1/3  p-5 rounded shadow bg-white font-sans m-5">
+    <div class="flex flex-col items-center w-1/2">
+      <div class="inline-block w-full p-5 rounded shadow bg-white font-sans m-5">
         <div class="flex items-center flex-col pt-10">
           <h1 class="font-bold text-gray-900 text-5xl lg:text-7xl text-center ">Hi{name() ? `, ${name()}` : ""}!</h1>
 
           <h2 class={"w-full p-5 items-center text-center min-w-[320px]"} style={{ color: "purple" }}>
-            This sis a Vite Solidjs SSR Tailwind boilerplate!
+            This is a Vite Solidjs SSR Tailwind boilerplate!
           </h2>
           <h3>Counter: {state.count}</h3>
 
