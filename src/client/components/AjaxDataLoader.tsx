@@ -1,28 +1,9 @@
-import { ExampleService } from "@server/services/example.service";
-import { ORIGIN } from "@shared/enums/origin.enum";
 import { createResource } from "solid-js";
-import { isServer } from "solid-js/web";
-
-function createDelay() {
-  const startedAt = new Date();
-  return new Promise(resolve => {
-    setTimeout(() => {
-      if (isServer) {
-        const service = new ExampleService();
-        resolve({ startedAt, isServer, ...service.getData(ORIGIN.SERVER) });
-      } else {
-        fetch("http://localhost:7456/api")
-          .then(response => response.json())
-          .then(data => {
-            resolve({ startedAt, isServer, ...data });
-          });
-      }
-    }, 3500);
-  });
-}
+import { ApiConsumerService } from "@shared/services/api-consumer.service";
+import { ExampleDTO } from "@root/src/shared/dtos/example.dto";
 
 const AjaxDataLoader = () => {
-  const [data] = createResource("data", createDelay);
+  const [data] = createResource<ExampleDTO>("data", ApiConsumerService.getExampleData);
   return (
     <>
       <h3>Data loaded from /api:</h3>
