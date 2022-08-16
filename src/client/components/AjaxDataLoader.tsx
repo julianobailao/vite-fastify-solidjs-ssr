@@ -3,7 +3,8 @@ import { ApiConsumerService } from "@shared/services/api-consumer.service";
 import { ExampleDTO } from "@root/src/shared/dtos/example.dto";
 
 const AjaxDataLoader = () => {
-  const [data] = createResource<ExampleDTO>("data", ApiConsumerService.getExampleData);
+  const [data] = createResource<ExampleDTO>(ApiConsumerService.getExampleData);
+
   return (
     <>
       <h3>Data loaded from /api:</h3>
